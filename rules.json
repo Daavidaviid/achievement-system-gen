@@ -1,0 +1,228 @@
+{
+    "statistics": {
+        "game": [
+            {
+                "name": "NumberOfAttacks",
+                "key": "numberOfAttacks",
+                "type": "int",
+                "description": "Number of attempted attacks"
+            },
+            {
+                "name": "NumberOfHits",
+                "key": "numberOfHits",
+                "type": "int",
+                "description": "Number of hits"
+            },
+            {
+                "name": "TotalAmountDamageDone",
+                "key": "totalAmountDamageDone",
+                "type": "int",
+                "description": "Total Amount of damage done"
+            },
+            {
+                "name": "NumberOfKills",
+                "key": "numberOfKills",
+                "type": "int",
+                "description": "Number of kills"
+            },
+            {
+                "name": "NumberOfFirstHitKills",
+                "key": "numberOfFirstHitKills",
+                "type": "int",
+                "description": "Number of \"first hit\" kills"
+            },
+            {
+                "name": "NumberOfAssists",
+                "key": "numberOfAssists",
+                "type": "int",
+                "description": "Number of assists"
+            },
+            {
+                "name": "TotalNumberSpellsCast",
+                "key": "totalNumberSpellsCast",
+                "type": "int",
+                "description": "Total number of spells cast"
+            },
+            {
+                "name": "TotalSpellDamageDone",
+                "key": "totalSpellDamageDone",
+                "type": "int",
+                "description": "Total spell damage done"
+            },
+            {
+                "name": "TotalTimePlayed",
+                "key": "totalTimePlayed",
+                "type": "int",
+                "description": "Total time played"
+            },
+            {
+                "name": "NumberOfJump",
+                "key": "numberOfJump",
+                "type": "int",
+                "description": "Number of jumps"
+            }
+        ],
+        "historical": [
+            {
+                "name": "NumberOfWin",
+                "key": "numberOfWin",
+                "type": "int",
+                "description": "Number of win"
+            },
+            {
+                "name": "NumberOfLoss",
+                "key": "numberOfLoss",
+                "type": "int",
+                "description": "Number of loss"
+            },
+            {
+                "name": "NumberOfGames",
+                "key": "numberOfGames",
+                "type": "int",
+                "description": "Number of games"
+            }
+        ]
+    },
+    "achievements": {
+        "rules": [
+            {
+                "key": "Sharpshooter",
+                "name": "Sharpshooter",
+                "description": "a user receives this for landing 75% of their attacks, assuming they have at least attacked once",
+                "rule": "game.NumberOfHits / game.NumberOfAttacks * 100 >= 75 && game.NumberOfAttacks > 0",
+                "tests": {
+                    "success": {
+                        "game": {
+                            "NumberOfHits": 80,
+                            "NumberOfAttacks": 100
+                        }
+                    },
+                    "failure": {
+                        "game": {
+                            "NumberOfHits": 70,
+                            "NumberOfAttacks": 100
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Bruiser",
+                "name": "Bruiser",
+                "description": "a user receives this for doing more than 500 points of damage in one game",
+                "rule": "game.TotalAmountDamageDone >= 500",
+                "tests": {
+                    "success": {
+                        "game": {
+                            "TotalAmountDamageDone": 501
+                        }
+                    },
+                    "failure": {
+                        "game": {
+                            "TotalAmountDamageDone": 480
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Veteran",
+                "name": "Veteran",
+                "description": "a user receives this for playing more than 1000 games in their lifetime",
+                "rule": "historical.NumberOfGames >= 1000",
+                "tests": {
+                    "success": {
+                        "historical": {
+                            "NumberOfGames": 1200
+                        }
+                    },
+                    "failure": {
+                        "historical": {
+                            "NumberOfGames": 800
+                        }
+                    }
+                }
+            },
+            {
+                "key": "BigWinner",
+                "name": "Big Winner",
+                "description": "a user receives this for having 200 wins",
+                "rule": "historical.NumberOfWin >= 200",
+                "tests": {
+                    "success": {
+                        "historical": {
+                            "NumberOfWin": 300
+                        }
+                    },
+                    "failure": {
+                        "historical": {
+                            "NumberOfWin": 100
+                        }
+                    }
+                }
+            },
+            {
+                "key": "BugsBunny",
+                "name": "Bugs Bunny",
+                "description": "a user receives this for jumping at least 1000 times in one game",
+                "rule": "game.NumberOfJump >= 1000",
+                "tests": {
+                    "success": {
+                        "game": {
+                            "NumberOfJump": 1001
+                        }
+                    },
+                    "failure": {
+                        "game": {
+                            "NumberOfJump": 980
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Tired",
+                "name": "Tired",
+                "description": "A user receives this for being a good player (avg 30 kills / game) and killing less than 10 enemies during a game",
+                "rule": "historical.NumberOfKills / historical.NumberOfGames >= 30 && game.NumberOfKills <= 10",
+                "tests": {
+                    "success": {
+                        "historical": {
+                            "NumberOfKills": 100,
+                            "NumberOfGames": 3
+                        },
+                        "game": {
+                            "NumberOfKills": 9
+                        }
+                    },
+                    "failure": {
+                        "historical": {
+                            "NumberOfKills": 100,
+                            "NumberOfGames": 3
+                        },
+                        "game": {
+                            "NumberOfKills": 30
+                        }
+                    }
+                }
+            },
+            {
+                "key": "JumpyKiller",
+                "name": "Jumpy Killer",
+                "description": "A user receives this for killing more than 30 enemies during a game and jumping at least 300 in one game",
+                "rule": "game.NumberOfKills >= 30 && game.NumberOfJump >= 300",
+                "tests": {
+                    "success": {
+                        "game": {
+                            "NumberOfKills": 30,
+                            "NumberOfJump": 450
+                        }
+                    },
+                    "failure": {
+                        "game": {
+                            "NumberOfKills": 10,
+                            "NumberOfJump": 450
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

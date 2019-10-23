@@ -1,0 +1,12 @@
+package achievementmanager
+
+import (
+	"achievementsSystem/models"
+)
+
+{{- range .Achievements.Rules }}
+// Is{{ .Key }} : {{ .Description }} 
+func Is{{ .Key }}(game models.GameStatistics, historical models.HistoricalStatistics) bool {
+	return {{ .FormattedRule }}
+}
+{{- end }}

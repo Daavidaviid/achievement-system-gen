@@ -1,0 +1,52 @@
+package achievementmanager
+
+import (
+	"achievementsSystem/models"
+	"testing"
+)
+
+{{ range .Achievements.Rules }}
+{{- if .Tests }}
+func TestIs{{ .Key }}(t *testing.T) {
+	var game models.GameStatistics
+	var historical models.HistoricalStatistics
+	var checkTest bool
+
+	// {{ .Key }} Success
+	{{- if .Tests.Success.Game }}
+	{{- range $key, $value := .Tests.Success.Game }}
+	game.{{ $key }} = {{ $value }}
+	{{- end }}
+	{{- end }}
+
+	{{- if .Tests.Success.Historical }}
+	{{- range $key, $value := .Tests.Success.Historical }}
+	historical.{{- $key }} = {{ $value }}
+	{{- end }}
+	{{- end }}
+
+	checkTest = Is{{ .Key }}(game, historical)
+	if !checkTest {
+		t.Errorf("Is{{ .Key }}(game, historical) = %t; want false", checkTest)
+	}
+
+	// {{ .Key }} Failure
+	{{- if .Tests.Failure.Game }}
+	{{- range $key, $value := .Tests.Failure.Game }}
+	game.{{ $key }} = {{ $value }}
+	{{- end }}
+	{{- end }}
+
+	{{- if .Tests.Failure.Historical }}
+	{{- range $key, $value := .Tests.Failure.Historical }}
+	historical.{{- $key }} = {{ $value }}
+	{{- end }}
+	{{- end }}
+
+	checkTest = Is{{ .Key }}(game, historical)
+	if checkTest {
+		t.Errorf("Is{{ .Key }}(game, historical) = %t; want false", checkTest)
+	}
+}
+{{- end }}
+{{- end }}

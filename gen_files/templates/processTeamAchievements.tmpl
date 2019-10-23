@@ -1,0 +1,49 @@
+package achievementmanager
+
+import "achievementsSystem/models"
+
+func processTeamAchievements(games []models.GameStatistics, historicals *[]models.HistoricalStatistics, hasWon bool) {
+	for _, gameStatistics := range games {
+		var currentHistoricalIndex int
+
+		// Getting current player concerned historical statistics
+		for index, currentHistorical := range *historicals {
+			if currentHistorical.UserID == gameStatistics.UserID {
+				currentHistoricalIndex = index
+			}
+		}
+
+		(*historicals)[currentHistoricalIndex].NumberOfGames++
+		if !hasWon {
+			(*historicals)[currentHistoricalIndex].NumberOfWin++
+		} else {
+			(*historicals)[currentHistoricalIndex].NumberOfLoss++
+		}
+
+		// TODO : Increment game fields
+        {{- range .Statistics.Game }}
+        (*historicals)[currentHistoricalIndex].{{ .Name }} += gameStatistics.{{ .Name }}
+        {{- end }}
+
+		prevUserAchievements := (*historicals)[currentHistoricalIndex].Achievements
+		newUserAchievements := getUserAchievements(gameStatistics, (*historicals)[currentHistoricalIndex])
+
+		var justUnlockedAchievements []models.Achievement
+
+		for _, newUserAchievement := range newUserAchievements {
+			if len(prevUserAchievements) == 0 {
+				justUnlockedAchievements = append(justUnlockedAchievements, newUserAchievement)
+			} else {
+				for _, prevUserAchievement := range prevUserAchievements {
+					if prevUserAchievement.Key == newUserAchievement.Key {
+						break
+					}
+					justUnlockedAchievements = append(justUnlockedAchievements, newUserAchievement)
+				}
+			}
+		}
+
+		(*historicals)[currentHistoricalIndex].Achievements = newUserAchievements
+		(*historicals)[currentHistoricalIndex].NewAchievements = justUnlockedAchievements
+	}
+}

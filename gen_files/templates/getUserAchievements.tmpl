@@ -1,0 +1,21 @@
+package achievementmanager
+
+import (
+	"achievementsSystem/models"
+)
+
+func getUserAchievements(game models.GameStatistics, historical models.HistoricalStatistics) []models.Achievement {
+	achievements := []models.Achievement{}
+
+	// Check each achievements
+    {{- range .Achievements.Rules }}
+    if Is{{ .Key }}(game, historical) {
+        achievement := models.Achievement{
+			Key: "{{ .Key }}",
+		}
+		achievements = append(achievements, achievement)
+    }
+    {{- end }}
+
+	return achievements
+}
